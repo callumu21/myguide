@@ -9,9 +9,7 @@ describe("Testing the sites endpoint", () => {
       .expect(200)
       .then(({ body }) => {
         const sites = body;
-        console.log(body);
         expect(sites).toBeInstanceOf(Array);
-        console.log(sites);
         expect(sites).toHaveLength(3);
         sites.forEach((site) => {
           expect(site).toEqual(
@@ -85,7 +83,6 @@ describe("Testing the sites endpoint", () => {
       .expect(201)
       .then(({ body }) => {
         const sites = body;
-        console.log(body);
         expect(sites).toBeInstanceOf(Object);
         expect(sites).toEqual(
           expect.objectContaining({
@@ -102,6 +99,4 @@ describe("Testing the sites endpoint", () => {
         );
       });
   });
-
-
 });

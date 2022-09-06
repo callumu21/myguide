@@ -28,18 +28,6 @@ app.get("/sites", getSites);
 app.get("/sites/:user_id", getSiteUsers);
 app.post("/sites", postSite);
 
-// app.post("/sites", (req, res) => {
-//   const newSite = req.body;
-//   console.log(newSite);
-//   Site.create(newSite, (error, data) => {
-//     if (error) {
-//       res.status(500).send(error);
-//     } else {
-//       res.status(201).send(data);
-//     }
-//   });
-// });
-
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 module.exports = app;
