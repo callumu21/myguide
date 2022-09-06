@@ -1,16 +1,15 @@
 const site = require("../siteQuery");
 
-exports.retrieveSites = async () => {
-  return site.find().then((sites) => {
-    return sites;
-  });
-};
-
-exports.siteUsers = async (userId) => {
-  const id = userId.user_id;
-  return site.find({ authorID: id }).then((sitesByID) => {
-    return sitesByID;
-  });
+exports.retrieveSites = async (author_id) => {
+  if (author_id) {
+    return site.find({ authorID: author_id }).then((sites) => {
+      return sites;
+    });
+  } else {
+    return site.find().then((sites) => {
+      return sites;
+    });
+  }
 };
 
 exports.addAnotherSite = async (newSite) => {

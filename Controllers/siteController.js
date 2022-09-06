@@ -1,18 +1,9 @@
-const {
-  retrieveSites,
-  siteUsers,
-  addAnotherSite,
-} = require("../Models/siteModel");
+const { retrieveSites, addAnotherSite } = require("../Models/siteModel");
 
 exports.getSites = async (req, res) => {
-  const sites = await retrieveSites();
+  const { author_id } = req.query;
+  const sites = await retrieveSites(author_id);
   res.status(200).send(sites);
-};
-
-exports.getSiteUsers = async (req, res) => {
-  const userId = req.params;
-  const allSiteUsers = await siteUsers(userId);
-  res.status(200).send(allSiteUsers);
 };
 
 exports.postSite = async (req, res) => {
