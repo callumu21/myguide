@@ -1,6 +1,10 @@
 const request = require("supertest");
-
+const seed = require("../db/seeds/seed.js");
+const testData = require("../db/data/test-data");
 const app = require("../app.js");
+
+beforeEach(() => seed(testData));
+afterAll(() => seed(testData));
 
 describe("Testing the sites endpoint", () => {
   test("should return all of the valid sites, status 200", () => {
@@ -10,7 +14,7 @@ describe("Testing the sites endpoint", () => {
       .then(({ body }) => {
         const sites = body;
         expect(sites).toBeInstanceOf(Array);
-        expect(sites).toHaveLength(3);
+        expect(sites).toHaveLength(4);
         sites.forEach((site) => {
           expect(site).toEqual(
             expect.objectContaining({
