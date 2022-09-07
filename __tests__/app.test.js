@@ -59,17 +59,6 @@ describe("Testing the sites endpoint", () => {
       });
   });
 
-  test("should return an empty when passed an ID with no associated sites", () => {
-    return request(app)
-      .get("/sites?author_id=0")
-      .expect(200)
-      .then(({ body }) => {
-        const sites = body;
-        expect(sites).toBeInstanceOf(Array);
-        expect(sites).toHaveLength(0);
-      });
-  });
-
   test("should post a new site into site db, status 201", () => {
     return request(app)
       .post("/sites")
@@ -101,6 +90,24 @@ describe("Testing the sites endpoint", () => {
             websiteLink: "String",
           })
         );
+      });
+  });
+
+  test.only("should return a status 404 when passed an Author ID with no associated sites", () => {
+    return request(app)
+      .get("/sites?author_id=23")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Author ID does not exist");
+      });
+  });
+
+  test("should return a status 400 when passed an invalid input", () => {
+    return request(app)
+      .get("/sites?author_id=dsahk")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid ID input");
       });
   });
 });

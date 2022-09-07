@@ -21,6 +21,18 @@ app.use(express.json());
 app.get("/sites", getSites);
 app.post("/sites", postSite);
 
+app.use((err, req, res, next) => {
+  console.log(err);
+  if (err.reason.code === "ERR_ASSERTION") {
+    console.log("heeelloooooooo if statement");
+    res.status(400).send({ msg: "Invalid ID input" });
+  } else {
+    console.log("heellloo else statement");
+    res.status(err.status).send({ msg: err.msg });
+  }
+  console.log("heellllo end of code");
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 module.exports = app;
