@@ -177,7 +177,6 @@ describe("Testing the tours endpoint", () => {
       .expect(201)
       .then(({ body }) => {
         const tours = body;
-        console.log(tours);
         expect(tours).toBeInstanceOf(Object);
         expect(tours).toEqual(
           expect.objectContaining({
