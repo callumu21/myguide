@@ -8,7 +8,6 @@ const seedData = require(`../data/${ENV}-data`);
 const runSeed = async () => {
   await seed(seedData);
   await mongoose.connection.close();
-  console.log("Seeding complete");
 };
 
 runSeed();

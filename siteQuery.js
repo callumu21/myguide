@@ -14,4 +14,4 @@ const SiteSchema = mongoose.Schema({
 });
 
 SiteSchema.plugin(AutoIncrement, { inc_field: "siteId" });
-module.exports = mongoose.model("site", siteSchema);
+module.exports = mongoose.model("site", SiteSchema);

@@ -24,7 +24,6 @@ const seed = async ({ siteData, tourData }) => {
     .updateOne({ id: "siteId" }, { $set: { seq: siteData.length } });
   await Site.deleteMany({});
   await Site.insertMany(siteData);
-  console.log("Sites seeded");
 };
 
 module.exports = seed;
