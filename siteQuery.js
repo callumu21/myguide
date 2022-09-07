@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const AutoIncrement = require("mongoose-sequence")(mongoose);
 
-const siteSchema = mongoose.Schema({
+const SiteSchema = mongoose.Schema({
   authorID: Number,
   siteName: String,
   siteDescription: String,
@@ -13,5 +13,5 @@ const siteSchema = mongoose.Schema({
   websiteLink: String,
 });
 
-siteSchema.plugin(AutoIncrement, { inc_field: "siteId" });
+SiteSchema.plugin(AutoIncrement, { inc_field: "siteId" });
 module.exports = mongoose.model("site", siteSchema);
