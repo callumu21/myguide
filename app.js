@@ -23,7 +23,7 @@ app.post("/sites", postSite);
 
 app.use((err, req, res, next) => {
   if (err.msg) res.status(err.status).send({ msg: err.msg });
-  res.status(400).send({ msg: "Invalid ID input" });
+  res.status(400).send({ msg: "Invalid Input" });
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

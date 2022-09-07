@@ -93,7 +93,7 @@ describe("Testing the sites endpoint", () => {
       });
   });
 
-  test.only("should return a status 404 when passed an Author ID with no associated sites", () => {
+  test("should return a status 404 when passed an Author ID with no associated sites", () => {
     return request(app)
       .get("/sites?author_id=23")
       .expect(404)
@@ -107,7 +107,46 @@ describe("Testing the sites endpoint", () => {
       .get("/sites?author_id=dsahk")
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe("Invalid ID input");
+        expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return status 400 when missing info on posted site", () => {
+    return request(app)
+      .post("/sites")
+      .send({
+        authorID: 12,
+        siteName: "String",
+        siteDescription: "String",
+        siteImage: "String",
+        latitude: 1232,
+        longitude: 1232,
+        contactInfo: "String",
+        websiteLink: "String",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Missing Input Information!");
+      });
+  });
+
+  test("should return status 400 when given incorrect data on site posting", () => {
+    return request(app)
+      .post("/sites")
+      .send({
+        authorID: 12,
+        siteName: "String",
+        siteDescription: "String",
+        siteImage: "String",
+        siteAddress: "String",
+        latitude: "1232",
+        longitude: 1232,
+        contactInfo: "String",
+        websiteLink: "String",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
       });
   });
 });
