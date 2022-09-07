@@ -25,6 +25,13 @@ app.post("/sites", postSite);
 app.get("/tours", getTours);
 app.post("/tours", postTour);
 
+
+app.use((err, req, res, next) => {
+  if (err.msg) res.status(err.status).send({ msg: err.msg });
+  res.status(400).send({ msg: "Invalid Input" });
+});
+
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 module.exports = app;

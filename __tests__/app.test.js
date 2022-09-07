@@ -59,6 +59,8 @@ describe("Testing the sites endpoint", () => {
       });
   });
 
+
+
   test("should return an empty array when passed an ID with no associated sites", () => {
     return request(app)
       .get("/sites?author_id=0")
@@ -69,6 +71,7 @@ describe("Testing the sites endpoint", () => {
         expect(sites).toHaveLength(0);
       });
   });
+
 
   test("should post a new site into site db, status 201", () => {
     return request(app)
@@ -101,6 +104,63 @@ describe("Testing the sites endpoint", () => {
             websiteLink: "String",
           })
         );
+      });
+  });
+
+  test("should return a status 404 when passed an Author ID with no associated sites", () => {
+    return request(app)
+      .get("/sites?author_id=23")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Author ID does not exist");
+      });
+  });
+
+  test("should return a status 400 when passed an invalid input", () => {
+    return request(app)
+      .get("/sites?author_id=dsahk")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return status 400 when missing info on posted site", () => {
+    return request(app)
+      .post("/sites")
+      .send({
+        authorID: 12,
+        siteName: "String",
+        siteDescription: "String",
+        siteImage: "String",
+        latitude: 1232,
+        longitude: 1232,
+        contactInfo: "String",
+        websiteLink: "String",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Missing Input Information!");
+      });
+  });
+
+  test("should return status 400 when given incorrect data on site posting", () => {
+    return request(app)
+      .post("/sites")
+      .send({
+        authorID: 12,
+        siteName: "String",
+        siteDescription: "String",
+        siteImage: "String",
+        siteAddress: "String",
+        latitude: "1232",
+        longitude: 1232,
+        contactInfo: "String",
+        websiteLink: "String",
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
       });
   });
 });
