@@ -59,20 +59,6 @@ describe("Testing the sites endpoint", () => {
       });
   });
 
-
-
-  test("should return an empty array when passed an ID with no associated sites", () => {
-    return request(app)
-      .get("/sites?author_id=0")
-      .expect(200)
-      .then(({ body }) => {
-        const sites = body;
-        expect(sites).toBeInstanceOf(Array);
-        expect(sites).toHaveLength(0);
-      });
-  });
-
-
   test("should post a new site into site db, status 201", () => {
     return request(app)
       .post("/sites")
@@ -212,17 +198,6 @@ describe("Testing the tours endpoint", () => {
       });
   });
 
-  test("should return an empty array when passed an ID with no associated tours", () => {
-    return request(app)
-      .get("/tours?author_id=0")
-      .expect(200)
-      .then(({ body }) => {
-        const tours = body;
-        expect(tours).toBeInstanceOf(Array);
-        expect(tours).toHaveLength(0);
-      });
-  });
-
   test("should post a new tour into site db, status 201", () => {
     return request(app)
       .post("/tours")
@@ -250,6 +225,57 @@ describe("Testing the tours endpoint", () => {
             tourSites: [1, 2, 3],
           })
         );
+      });
+  });
+
+  test("should return a status 404 when passed an Author ID with no associated tours", () => {
+    return request(app)
+      .get("/tours?author_id=23")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Author ID does not exist");
+      });
+  });
+
+  test("should return a status 400 when passed an invalid input", () => {
+    return request(app)
+      .get("/tours?author_id=dsahk")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return status 400 when missing info on posted site", () => {
+    return request(app)
+      .post("/tours")
+      .send({
+        authorId: 1,
+        tourDescription: "A small tour of historic Durham",
+        tourImage:
+          "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+        tourSites: [1, 2],
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Missing Input Information!");
+      });
+  });
+
+  test("should return status 400 when given incorrect data on site posting", () => {
+    return request(app)
+      .post("/tours")
+      .send({
+        authorId: 1,
+        tourName: 123,
+        tourDescription: "A small tour of historic Durham",
+        tourImage:
+          "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+        tourSites: [1, 2],
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
       });
   });
 });
