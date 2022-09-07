@@ -6,7 +6,8 @@ const { getTours, postTour } = require("./Controllers/tourController");
 
 const app = express();
 const port = process.env.PORT || 8001;
-require("dotenv").config({ path: "./.env.test" });
+const ENV = process.env.NODE_ENV || "development";
+require("dotenv").config({ path: `./.env.${ENV}` });
 const uri = process.env.MONGO_URI;
 
 mongoose.connect(uri, () => {
@@ -25,12 +26,10 @@ app.post("/sites", postSite);
 app.get("/tours", getTours);
 app.post("/tours", postTour);
 
-
 app.use((err, req, res, next) => {
   if (err.msg) res.status(err.status).send({ msg: err.msg });
   res.status(400).send({ msg: "Invalid Input" });
 });
-
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
