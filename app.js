@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { getSites, postSite } = require("./Controllers/siteController");
+const { getTours, postTour } = require("./Controllers/tourController");
 
 const app = express();
 const port = process.env.PORT || 8001;
@@ -20,6 +21,9 @@ app.use(express.json());
 
 app.get("/sites", getSites);
 app.post("/sites", postSite);
+
+app.get("/tours", getTours);
+app.post("/tours", postTour);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
