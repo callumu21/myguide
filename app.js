@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { getSites, postSite } = require("./Controllers/siteController");
+const { getTours, postTour } = require("./Controllers/tourController");
 
 const app = express();
 const port = process.env.PORT || 8001;
@@ -21,10 +22,15 @@ app.use(express.json());
 app.get("/sites", getSites);
 app.post("/sites", postSite);
 
+app.get("/tours", getTours);
+app.post("/tours", postTour);
+
+
 app.use((err, req, res, next) => {
   if (err.msg) res.status(err.status).send({ msg: err.msg });
   res.status(400).send({ msg: "Invalid Input" });
 });
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 

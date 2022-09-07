@@ -59,6 +59,20 @@ describe("Testing the sites endpoint", () => {
       });
   });
 
+
+
+  test("should return an empty array when passed an ID with no associated sites", () => {
+    return request(app)
+      .get("/sites?author_id=0")
+      .expect(200)
+      .then(({ body }) => {
+        const sites = body;
+        expect(sites).toBeInstanceOf(Array);
+        expect(sites).toHaveLength(0);
+      });
+  });
+
+
   test("should post a new site into site db, status 201", () => {
     return request(app)
       .post("/sites")
@@ -147,6 +161,95 @@ describe("Testing the sites endpoint", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+});
+
+describe("Testing the tours endpoint", () => {
+  test("should return all of the valid tours, status 200", () => {
+    return request(app)
+      .get("/tours")
+      .expect(200)
+      .then(({ body }) => {
+        const tours = body;
+        expect(tours).toBeInstanceOf(Array);
+        expect(tours).toHaveLength(2);
+        tours.forEach((tour) => {
+          expect(tour).toEqual(
+            expect.objectContaining({
+              tourId: expect.any(Number),
+              tourCode: expect.any(Number),
+              tourName: expect.any(String),
+              tourDescription: expect.any(String),
+              tourImage: expect.any(String),
+              tourSites: expect.any(Array),
+            })
+          );
+        });
+      });
+  });
+
+  test("should return all associated tours by stated author ID", () => {
+    return request(app)
+      .get("/tours?author_id=1")
+      .expect(200)
+      .then(({ body }) => {
+        const tours = body;
+        expect(tours).toBeInstanceOf(Array);
+        expect(tours).toHaveLength(2);
+        tours.forEach((tour) => {
+          expect(tour).toEqual(
+            expect.objectContaining({
+              tourId: expect.any(Number),
+              tourCode: expect.any(Number),
+              tourName: expect.any(String),
+              tourDescription: expect.any(String),
+              tourImage: expect.any(String),
+              tourSites: expect.any(Array),
+            })
+          );
+        });
+      });
+  });
+
+  test("should return an empty array when passed an ID with no associated tours", () => {
+    return request(app)
+      .get("/tours?author_id=0")
+      .expect(200)
+      .then(({ body }) => {
+        const tours = body;
+        expect(tours).toBeInstanceOf(Array);
+        expect(tours).toHaveLength(0);
+      });
+  });
+
+  test("should post a new tour into site db, status 201", () => {
+    return request(app)
+      .post("/tours")
+      .send({
+        authorId: 1,
+        tourName: "A Medium Tour of Durham",
+        tourDescription: "A medium tour of historic Durham",
+        tourImage:
+          "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+        tourSites: [1, 2, 3],
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const tours = body;
+        expect(tours).toBeInstanceOf(Object);
+        expect(tours).toEqual(
+          expect.objectContaining({
+            tourId: expect.any(Number),
+            tourCode: expect.any(Number),
+            authorId: 1,
+            tourName: "A Medium Tour of Durham",
+            tourDescription: "A medium tour of historic Durham",
+            tourImage:
+              "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+            tourSites: [1, 2, 3],
+          })
+        );
       });
   });
 });
