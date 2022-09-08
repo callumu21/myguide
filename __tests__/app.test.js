@@ -225,6 +225,29 @@ describe("Testing the tours endpoint", () => {
       });
   });
 
+  test("should return corresponding associated tours by stated tour code", () => {
+    return request(app)
+      .get("/tours?tour_code=123456")
+      .expect(200)
+      .then(({ body }) => {
+        const tours = body;
+        expect(tours).toBeInstanceOf(Array);
+        expect(tours).toHaveLength(1);
+        tours.forEach((tour) => {
+          expect(tour).toEqual(
+            expect.objectContaining({
+              tourId: expect.any(Number),
+              tourCode: 123456,
+              tourName: expect.any(String),
+              tourDescription: expect.any(String),
+              tourImage: expect.any(String),
+              tourSites: expect.any(Array),
+            })
+          );
+        });
+      });
+  });
+
   test("should post a new tour into site db, status 201", () => {
     return request(app)
       .post("/tours")
@@ -267,6 +290,24 @@ describe("Testing the tours endpoint", () => {
   test("should return a status 400 when passed an invalid input", () => {
     return request(app)
       .get("/tours?author_id=dsahk")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return status 404 when passed a tour code with no associated tours", () => {
+    return request(app)
+      .get("/tours?tour_code=123452")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Tour code does not exist");
+      });
+  });
+
+  test("should return status 400 when passed an invalid tour code", () => {
+    return request(app)
+      .get("/tours?tour_code=banana")
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Invalid Input");
