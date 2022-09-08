@@ -58,3 +58,22 @@ exports.addAnotherSite = async (newSite) => {
     return createdSite;
   });
 };
+
+exports.fetchedSiteById = async (site_id) => {
+  console.log(site_id);
+  return Site.find({ siteId: site_id }).then((siteById) => {
+    return siteById;
+  });
+};
+
+exports.updateSiteById = async (site_id, updates) => {
+  return Site.updateOne({ siteId: site_id }, { $set: updates }).then(
+    (updatedSite) => {
+      return updatedSite;
+    }
+  );
+};
+
+exports.removeSiteById = async (site_id) => {
+  return Site.deleteOne({ siteId: site_id });
+};

@@ -380,3 +380,67 @@ describe("Testing tours endpoint with specified tour_ids", () => {
       });
   });
 });
+
+describe("Testing the site/:site_id endpoints", () => {
+  test("should return specified site when correct id entered ", () => {
+    return request(app)
+      .get("/sites/1")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body[0]);
+        expect(body[0]).toEqual(
+          expect.objectContaining({
+            authorID: 1,
+            siteName: "Durham Cathedral",
+            siteDescription: "This is Durham Cathedral",
+            siteImage:
+              "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+            siteAddress: "Durham DH1 3EH",
+            latitude: 54.773678472624034,
+            longitude: -1.5762204386383316,
+            contactInfo: "0191 338 7178",
+            websiteLink: "https://www.durhamcathedral.co.uk/",
+          })
+        );
+      });
+  });
+
+  test("should patch/update an existing site's details where stated", () => {
+    return request(app)
+      .patch("/sites/1")
+      .send({ siteName: "Manchester Cathedral" })
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body[0]);
+        expect(body[0]).toEqual(
+          expect.objectContaining({
+            authorID: 1,
+            siteName: "Manchester Cathedral",
+            siteDescription: "This is Durham Cathedral",
+            siteImage:
+              "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+            siteAddress: "Durham DH1 3EH",
+            latitude: 54.773678472624034,
+            longitude: -1.5762204386383316,
+            contactInfo: "0191 338 7178",
+            websiteLink: "https://www.durhamcathedral.co.uk/",
+          })
+        );
+      });
+  });
+
+  test("should return status 204 for when specified site has been deleted", () => {
+    return request(app)
+      .delete("/sites/1")
+      .expect(204)
+      .then(() => {
+        return request(app)
+          .get("/sites")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).toBeInstanceOf(Array);
+            expect(body).toHaveLength(3);
+          });
+      });
+  });
+});

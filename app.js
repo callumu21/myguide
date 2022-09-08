@@ -1,7 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const { getSites, postSite } = require("./Controllers/siteController");
+
+const {
+  getSites,
+  postSite,
+  getSiteById,
+  patchSiteById,
+  deleteSiteById,
+} = require("./Controllers/siteController");
+
 const {
   getTours,
   postTour,
@@ -9,6 +17,7 @@ const {
   deleteTour,
   updateTour,
 } = require("./Controllers/tourController");
+
 
 const app = express();
 const port = process.env.PORT || 8001;
@@ -28,6 +37,10 @@ app.use(express.json());
 
 app.get("/sites", getSites);
 app.post("/sites", postSite);
+
+app.get("/sites/:site_id", getSiteById);
+app.patch("/sites/:site_id", patchSiteById);
+app.delete("/sites/:site_id", deleteSiteById);
 
 app.get("/tours", getTours);
 app.post("/tours", postTour);
