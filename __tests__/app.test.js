@@ -111,6 +111,33 @@ describe("Testing the sites endpoint", () => {
       });
   });
 
+  test("should return a status 404 when passed an empty array as the sites_id query", () => {
+    return request(app)
+      .get("/sites?site_ids=[]")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("No sites found");
+      });
+  });
+
+  test("should return a status 404 when passed an array with site ids not matching any site", () => {
+    return request(app)
+      .get("/sites?site_ids=[200, 201]")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("No sites found");
+      });
+  });
+
+  test("should return a status 400 when passed a site_ids query not matching an array", () => {
+    return request(app)
+      .get("/sites?site_ids=211")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Site IDs should be an array");
+      });
+  });
+
   test("should return status 400 when missing info on posted site", () => {
     return request(app)
       .post("/sites")
@@ -198,17 +225,6 @@ describe("Testing the tours endpoint", () => {
       });
   });
 
-  test("should return an empty array when passed an ID with no associated tours", () => {
-    return request(app)
-      .get("/tours?author_id=0")
-      .expect(200)
-      .then(({ body }) => {
-        const tours = body;
-        expect(tours).toBeInstanceOf(Array);
-        expect(tours).toHaveLength(0);
-      });
-  });
-
   test("should post a new tour into site db, status 201", () => {
     return request(app)
       .post("/tours")
@@ -234,6 +250,131 @@ describe("Testing the tours endpoint", () => {
             tourImage:
               "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
             tourSites: [1, 2, 3],
+          })
+        );
+      });
+  });
+
+  test("should return a status 404 when passed an Author ID with no associated tours", () => {
+    return request(app)
+      .get("/tours?author_id=23")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Author ID does not exist");
+      });
+  });
+
+  test("should return a status 400 when passed an invalid input", () => {
+    return request(app)
+      .get("/tours?author_id=dsahk")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return status 400 when missing info on posted site", () => {
+    return request(app)
+      .post("/tours")
+      .send({
+        authorId: 1,
+        tourDescription: "A small tour of historic Durham",
+        tourImage:
+          "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+        tourSites: [1, 2],
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Missing Input Information!");
+      });
+  });
+
+  test("should return status 400 when given incorrect data on site posting", () => {
+    return request(app)
+      .post("/tours")
+      .send({
+        authorId: 1,
+        tourName: 123,
+        tourDescription: "A small tour of historic Durham",
+        tourImage:
+          "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+        tourSites: [1, 2],
+      })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return status 404 when accessing an invalid endpoint", () => {
+    return request(app)
+      .get("/maps")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Endpoint does not exist");
+      });
+  });
+});
+
+describe("Testing tours endpoint with specified tour_ids", () => {
+  test("should return status 200 and the tour with corresponding tourId", () => {
+    return request(app)
+      .get("/tours/1")
+      .expect(200)
+      .then(({ body }) => {
+        const tour = body[0];
+        expect(tour).toEqual(
+          expect.objectContaining({
+            tourId: 1,
+            authorId: 1,
+            tourCode: 123456,
+            tourName: "Tour of Durham",
+            tourDescription: "A tour of historic Durham",
+            tourImage:
+              "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+            tourSites: [1, 2, 3, 4],
+          })
+        );
+      });
+  });
+
+  test("should return status 204 and no body for deleted tour", () => {
+    return request(app)
+      .delete("/tours/1")
+      .expect(204)
+      .then(() => {
+        return request(app)
+          .get("/tours")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).toBeInstanceOf(Array);
+            expect(body).toHaveLength(1);
+          });
+      });
+  });
+
+  test("should return status 200 and updated tour for patch request", () => {
+    const update = {
+      tourCode: 555555,
+      tourName: "test name",
+      tourDescription: "test description",
+    };
+    return request(app)
+      .patch("/tours/1")
+      .send(update)
+      .expect(200)
+      .then(({ body }) => {
+        const tour = body[0];
+        expect(tour).toEqual(
+          expect.objectContaining({
+            tourId: 1,
+            authorId: 1,
+            tourCode: 555555,
+            tourName: "test name",
+            tourDescription: "test description",
+            tourImage:
+              "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+            tourSites: [1, 2, 3, 4],
           })
         );
       });
