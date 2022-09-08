@@ -12,7 +12,8 @@ const {
 
 const app = express();
 const port = process.env.PORT || 8001;
-require("dotenv").config({ path: "./.env.test" });
+const ENV = process.env.NODE_ENV || "development";
+require("dotenv").config({ path: `./.env.${ENV}` });
 const uri = process.env.MONGO_URI;
 
 mongoose.connect(uri, () => {
