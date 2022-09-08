@@ -2,7 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { getSites, postSite } = require("./Controllers/siteController");
-const { getTours, postTour } = require("./Controllers/tourController");
+const {
+  getTours,
+  postTour,
+  getTourById,
+  deleteTour,
+  updateTour,
+} = require("./Controllers/tourController");
 
 const app = express();
 const port = process.env.PORT || 8001;
@@ -25,12 +31,14 @@ app.post("/sites", postSite);
 app.get("/tours", getTours);
 app.post("/tours", postTour);
 
+app.get("/tours/:tour_id", getTourById);
+app.patch("/tours/:tour_id", updateTour);
+app.delete("/tours/:tour_id", deleteTour);
 
 app.use((err, req, res, next) => {
   if (err.msg) res.status(err.status).send({ msg: err.msg });
   res.status(400).send({ msg: "Invalid Input" });
 });
-
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 

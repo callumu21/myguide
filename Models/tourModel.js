@@ -12,8 +12,22 @@ exports.fetchTours = async (author_id) => {
   }
 };
 
+exports.fetchTourById = async (tour_id) => {
+  return Tour.find({ tourId: tour_id }).then((tour) => {
+    return tour;
+  });
+};
+
 exports.addTour = async (newTour) => {
   return Tour.create(newTour).then((createdTour) => {
     return createdTour;
   });
+};
+
+exports.changeTour = async (tour_id, updates) => {
+  return Tour.updateOne({ tourId: tour_id }, { $set: updates });
+};
+
+exports.removeTour = async (tour_id) => {
+  return Tour.deleteOne({ tourId: tour_id });
 };

@@ -59,20 +59,6 @@ describe("Testing the sites endpoint", () => {
       });
   });
 
-
-
-  test("should return an empty array when passed an ID with no associated sites", () => {
-    return request(app)
-      .get("/sites?author_id=0")
-      .expect(200)
-      .then(({ body }) => {
-        const sites = body;
-        expect(sites).toBeInstanceOf(Array);
-        expect(sites).toHaveLength(0);
-      });
-  });
-
-
   test("should post a new site into site db, status 201", () => {
     return request(app)
       .post("/sites")
@@ -248,6 +234,71 @@ describe("Testing the tours endpoint", () => {
             tourImage:
               "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
             tourSites: [1, 2, 3],
+          })
+        );
+      });
+  });
+});
+
+describe("Testing tours endpoint with specified tour_ids", () => {
+  test("should return status 200 and the tour with corresponding tourId", () => {
+    return request(app)
+      .get("/tours/1")
+      .expect(200)
+      .then(({ body }) => {
+        const tour = body[0];
+        expect(tour).toEqual(
+          expect.objectContaining({
+            tourId: 1,
+            authorId: 1,
+            tourCode: 123456,
+            tourName: "Tour of Durham",
+            tourDescription: "A tour of historic Durham",
+            tourImage:
+              "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+            tourSites: [1, 2, 3, 4],
+          })
+        );
+      });
+  });
+
+  test("should return status 204 and no body for deleted tour", () => {
+    return request(app)
+      .delete("/tours/1")
+      .expect(204)
+      .then(() => {
+        return request(app)
+          .get("/tours")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).toBeInstanceOf(Array);
+            expect(body).toHaveLength(1);
+          });
+      });
+  });
+
+  test("should return status 200 and updated tour for patch request", () => {
+    const update = {
+      tourCode: 555555,
+      tourName: "test name",
+      tourDescription: "test description",
+    };
+    return request(app)
+      .patch("/tours/1")
+      .send(update)
+      .expect(200)
+      .then(({ body }) => {
+        const tour = body[0];
+        expect(tour).toEqual(
+          expect.objectContaining({
+            tourId: 1,
+            authorId: 1,
+            tourCode: 555555,
+            tourName: "test name",
+            tourDescription: "test description",
+            tourImage:
+              "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+            tourSites: [1, 2, 3, 4],
           })
         );
       });
