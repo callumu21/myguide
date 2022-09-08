@@ -59,6 +59,32 @@ describe("Testing the sites endpoint", () => {
       });
   });
 
+  test("should return all associated sites from an array of siteIDs", () => {
+    return request(app)
+      .get("/sites?site_ids=[1, 2]")
+      .expect(200)
+      .then(({ body }) => {
+        const sites = body;
+        expect(sites).toBeInstanceOf(Array);
+        expect(sites).toHaveLength(2);
+        sites.forEach((site) => {
+          expect(site).toEqual(
+            expect.objectContaining({
+              authorID: expect.any(Number),
+              siteName: expect.any(String),
+              siteDescription: expect.any(String),
+              siteImage: expect.any(String),
+              siteAddress: expect.any(String),
+              latitude: expect.any(Number),
+              longitude: expect.any(Number),
+              contactInfo: expect.any(String),
+              websiteLink: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
   test("should post a new site into site db, status 201", () => {
     return request(app)
       .post("/sites")
@@ -108,6 +134,33 @@ describe("Testing the sites endpoint", () => {
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return a status 404 when passed an empty array as the sites_id query", () => {
+    return request(app)
+      .get("/sites?site_ids=[]")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("No sites found");
+      });
+  });
+
+  test("should return a status 404 when passed an array with site ids not matching any site", () => {
+    return request(app)
+      .get("/sites?site_ids=[200, 201]")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("No sites found");
+      });
+  });
+
+  test("should return a status 400 when passed a site_ids query not matching an array", () => {
+    return request(app)
+      .get("/sites?site_ids=211")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Site IDs should be an array");
       });
   });
 
