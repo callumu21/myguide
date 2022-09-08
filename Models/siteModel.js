@@ -1,10 +1,23 @@
 const Site = require("../siteQuery");
 
-exports.retrieveSites = async (author_id) => {
+exports.retrieveSites = async (author_id, site_ids) => {
   if (author_id) {
     return Site.find({ authorID: author_id }).then((sites) => {
       if (!sites.length) {
         return Promise.reject({ status: 404, msg: "Author ID does not exist" });
+      }
+      return sites;
+    });
+  } else if (site_ids) {
+    const ids = JSON.parse(site_ids);
+    if (!Array.isArray(ids))
+      return Promise.reject({
+        status: 400,
+        msg: "Site IDs should be an array",
+      });
+    return Site.find({ siteId: { $in: ids } }).then((sites) => {
+      if (!sites.length) {
+        return Promise.reject({ status: 404, msg: "No sites found" });
       }
       return sites;
     });
