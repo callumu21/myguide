@@ -1,12 +1,19 @@
 const Tour = require("../tourQuery");
 
-exports.fetchTours = async (author_id) => {
+exports.fetchTours = async (author_id, tour_code) => {
   if (author_id) {
     return Tour.find({ authorId: author_id }).then((tours) => {
       if (!tours.length) {
         return Promise.reject({ status: 404, msg: "Author ID does not exist" });
       }
       return tours;
+    });
+  } else if (tour_code) {
+    return Tour.find({ tourCode: tour_code }).then((tour) => {
+      if (!tour.length) {
+        return Promise.reject({ status: 404, msg: "Tour code does not exist" });
+      }
+      return tour;
     });
   } else {
     return Tour.find().then((tours) => {

@@ -8,8 +8,10 @@ const {
 const generateUniqueId = require("generate-unique-id");
 
 exports.getTours = async (req, res, next) => {
-  const { author_id } = req.query;
-  const tours = await fetchTours(author_id).catch((err) => next(err));
+  const { author_id, tour_code } = req.query;
+  const tours = await fetchTours(author_id, tour_code).catch((err) =>
+    next(err)
+  );
   res.status(200).send(tours);
 };
 
@@ -19,7 +21,7 @@ exports.getTourById = async (req, res) => {
   res.status(200).send(tour);
 };
 
-exports.postTour = async (req, res) => {
+exports.postTour = async (req, res, next) => {
   const newTour = req.body;
   const id = generateUniqueId({
     length: 6,

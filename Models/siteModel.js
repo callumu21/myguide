@@ -60,7 +60,6 @@ exports.addAnotherSite = async (newSite) => {
 };
 
 exports.fetchedSiteById = async (site_id) => {
-  console.log(site_id);
   return Site.find({ siteId: site_id }).then((siteById) => {
     return siteById;
   });
