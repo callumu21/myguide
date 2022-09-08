@@ -1,4 +1,10 @@
-const { fetchTours, addTour } = require("../Models/tourModel");
+const {
+  fetchTours,
+  fetchTourById,
+  addTour,
+  removeTour,
+  changeTour,
+} = require("../Models/tourModel");
 const generateUniqueId = require("generate-unique-id");
 
 exports.getTours = async (req, res, next) => {
@@ -7,7 +13,13 @@ exports.getTours = async (req, res, next) => {
   res.status(200).send(tours);
 };
 
-exports.postTour = async (req, res, next) => {
+exports.getTourById = async (req, res) => {
+  const { tour_id } = req.params;
+  const tour = await fetchTourById(tour_id);
+  res.status(200).send(tour);
+};
+
+exports.postTour = async (req, res) => {
   const newTour = req.body;
   const id = generateUniqueId({
     length: 6,
@@ -16,4 +28,18 @@ exports.postTour = async (req, res, next) => {
   newTour.tourCode = Number(id);
   const addedTour = await addTour(newTour).catch((err) => next(err));
   res.status(201).send(addedTour);
+};
+
+exports.updateTour = async (req, res) => {
+  const { tour_id } = req.params;
+  const updates = req.body;
+  await changeTour(tour_id, updates);
+  const tour = await fetchTourById(tour_id);
+  res.status(200).send(tour);
+};
+
+exports.deleteTour = async (req, res) => {
+  const { tour_id } = req.params;
+  await removeTour(tour_id);
+  res.sendStatus(204);
 };
