@@ -36,6 +36,10 @@ app.get("/tours/:tour_id", getTourById);
 app.patch("/tours/:tour_id", updateTour);
 app.delete("/tours/:tour_id", deleteTour);
 
+app.all("/*", (req, res) => {
+  res.status(404).send({ msg: "Endpoint does not exist" });
+});
+
 app.use((err, req, res, next) => {
   if (err.msg) res.status(err.status).send({ msg: err.msg });
   res.status(400).send({ msg: "Invalid Input" });
