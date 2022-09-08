@@ -331,4 +331,13 @@ describe("Testing the tours endpoint", () => {
         expect(res.body.msg).toBe("Invalid Input");
       });
   });
+
+  test("should return status 404 when accessing an invalid endpoint", () => {
+    return request(app)
+      .get("/maps")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Endpoint does not exist");
+      });
+  });
 });
