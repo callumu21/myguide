@@ -1,4 +1,5 @@
 const request = require("supertest");
+const jestsorted = require("jest-sorted");
 const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data");
 const app = require("../app.js");
@@ -14,7 +15,7 @@ describe("Testing the sites endpoint", () => {
       .then(({ body }) => {
         const sites = body;
         expect(sites).toBeInstanceOf(Array);
-        expect(sites).toHaveLength(4);
+        expect(sites).toHaveLength(18);
         sites.forEach((site) => {
           expect(site).toEqual(
             expect.objectContaining({
@@ -40,7 +41,7 @@ describe("Testing the sites endpoint", () => {
       .then(({ body }) => {
         const sites = body;
         expect(sites).toBeInstanceOf(Array);
-        expect(sites).toHaveLength(3);
+        expect(sites).toHaveLength(8);
         sites.forEach((site) => {
           expect(site).toEqual(
             expect.objectContaining({
@@ -186,7 +187,7 @@ describe("Testing the tours endpoint", () => {
       .then(({ body }) => {
         const tours = body;
         expect(tours).toBeInstanceOf(Array);
-        expect(tours).toHaveLength(2);
+        expect(tours).toHaveLength(5);
         tours.forEach((tour) => {
           expect(tour).toEqual(
             expect.objectContaining({
@@ -209,7 +210,7 @@ describe("Testing the tours endpoint", () => {
       .then(({ body }) => {
         const tours = body;
         expect(tours).toBeInstanceOf(Array);
-        expect(tours).toHaveLength(2);
+        expect(tours).toHaveLength(3);
         tours.forEach((tour) => {
           expect(tour).toEqual(
             expect.objectContaining({
@@ -330,7 +331,7 @@ describe("Testing the tours endpoint", () => {
       });
   });
 
-  test("should return status 400 when given incorrect data on site posting", () => {
+  test("should return status 400 when given incorrect data on tours posting", () => {
     return request(app)
       .post("/tours")
       .send({
@@ -343,7 +344,7 @@ describe("Testing the tours endpoint", () => {
       })
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe("Invalid Input");
+        expect(res.body.msg).toBe("Invalid input information!");
       });
   });
 
@@ -389,7 +390,7 @@ describe("Testing tours endpoint with specified tour_ids", () => {
           .expect(200)
           .then(({ body }) => {
             expect(body).toBeInstanceOf(Array);
-            expect(body).toHaveLength(1);
+            expect(body).toHaveLength(4);
           });
       });
   });
@@ -495,7 +496,6 @@ describe("Testing the site/:site_id endpoints", () => {
       .get("/sites/1")
       .expect(200)
       .then(({ body }) => {
-        console.log(body[0]);
         expect(body[0]).toEqual(
           expect.objectContaining({
             authorID: 1,
@@ -519,7 +519,6 @@ describe("Testing the site/:site_id endpoints", () => {
       .send({ siteName: "Manchester Cathedral" })
       .expect(200)
       .then(({ body }) => {
-        console.log(body[0]);
         expect(body[0]).toEqual(
           expect.objectContaining({
             authorID: 1,
@@ -547,8 +546,91 @@ describe("Testing the site/:site_id endpoints", () => {
           .expect(200)
           .then(({ body }) => {
             expect(body).toBeInstanceOf(Array);
-            expect(body).toHaveLength(3);
+            expect(body).toHaveLength(17);
           });
+      });
+  });
+});
+
+describe("Sorting and ordering queries for /tours", () => {
+  test("Tours are returned in descending order of updatedAt by default", () => {
+    return request(app)
+      .get("/tours")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("updatedAt", { descending: true });
+      });
+  });
+
+  test("Tours can be sorted by tourName", () => {
+    return request(app)
+      .get("/tours?sort_by=tourName")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("tourName", { descending: true });
+      });
+  });
+
+  test("Tours can be sorted by tourCode", () => {
+    return request(app)
+      .get("/tours?sort_by=tourCode")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("tourCode", { descending: true });
+      });
+  });
+
+  test("Tours can be sorted in ascending order of updatedAt", () => {
+    return request(app)
+      .get("/tours?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("updatedAt", { descending: false });
+      });
+  });
+
+  test("Tours can be sorted in reverse alphabetical order for tourName", () => {
+    return request(app)
+      .get("/tours?sort_by=tourName&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("tourName", { descending: false });
+      });
+  });
+
+  test("Tours can be sorted in ascending order by tourCode", () => {
+    return request(app)
+      .get("/tours?sort_by=tourCode&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("tourCode", { descending: false });
+      });
+  });
+
+  test("Tours can be sorted in ascending order by createdAt", () => {
+    return request(app)
+      .get("/tours?sort_by=createdAt&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("createdAt", { descending: false });
+      });
+  });
+
+  test("Returns a 400 status code and error message when sort_by query is invalid", () => {
+    return request(app)
+      .get("/tours?sort_by=age")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid sort by query");
+      });
+  });
+
+  test("Returns a 400 status code and error message when order query is invalid", () => {
+    return request(app)
+      .get("/tours?order=age")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid order query");
       });
   });
 });
