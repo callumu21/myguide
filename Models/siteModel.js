@@ -1,13 +1,33 @@
 const Site = require("../siteQuery");
 
-exports.retrieveSites = async (author_id, site_ids) => {
+exports.retrieveSites = async (
+  author_id,
+  site_ids,
+  sort_by = "updatedAt",
+  order = "desc"
+) => {
+  const validSortQueries = ["updatedAt", "siteName"];
+
+  if (!validSortQueries.includes(sort_by))
+    return Promise.reject({ status: 400, msg: "Invalid sort by query" });
+
+  const validOrderQueries = ["desc", "asc"];
+
+  if (!validOrderQueries.includes(order))
+    return Promise.reject({ status: 400, msg: "Invalid order query" });
+
   if (author_id) {
-    return Site.find({ authorID: author_id }).then((sites) => {
-      if (!sites.length) {
-        return Promise.reject({ status: 404, msg: "Author ID does not exist" });
-      }
-      return sites;
-    });
+    return Site.find({ authorID: author_id })
+      .sort({ [sort_by]: order === "desc" ? -1 : 1 })
+      .then((sites) => {
+        if (!sites.length) {
+          return Promise.reject({
+            status: 404,
+            msg: "Author ID does not exist",
+          });
+        }
+        return sites;
+      });
   } else if (site_ids) {
     const ids = JSON.parse(site_ids);
     if (!Array.isArray(ids))
@@ -15,16 +35,20 @@ exports.retrieveSites = async (author_id, site_ids) => {
         status: 400,
         msg: "Site IDs should be an array",
       });
-    return Site.find({ siteId: { $in: ids } }).then((sites) => {
-      if (!sites.length) {
-        return Promise.reject({ status: 404, msg: "No sites found" });
-      }
-      return sites;
-    });
+    return Site.find({ siteId: { $in: ids } })
+      .sort({ [sort_by]: order === "desc" ? -1 : 1 })
+      .then((sites) => {
+        if (!sites.length) {
+          return Promise.reject({ status: 404, msg: "No sites found" });
+        }
+        return sites;
+      });
   } else {
-    return Site.find().then((sites) => {
-      return sites;
-    });
+    return Site.find()
+      .sort({ [sort_by]: order === "desc" ? -1 : 1 })
+      .then((sites) => {
+        return sites;
+      });
   }
 };
 
