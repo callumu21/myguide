@@ -420,6 +420,73 @@ describe("Testing tours endpoint with specified tour_ids", () => {
         );
       });
   });
+
+  test("should return a status 404 for GET when passed an tour ID with no associated tours", () => {
+    return request(app)
+      .get("/tours/999")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Tour does not exist");
+      });
+  });
+
+  test("should return a status 400 for GET when passed an invalid input", () => {
+    return request(app)
+      .get("/tours/one")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return a status 404 for DELETE when passed a non existant tour ID", () => {
+    return request(app)
+      .delete("/tours/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Tour does not exist");
+      });
+  });
+
+  test("should return a status 400 for delete when passed a invalid body", () => {
+    return request(app)
+      .patch("/tours/1")
+      .send({ tourCode: "onetwothree" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return status 400 when passed a body with both valid and invalid values AND the tour should remain unchaed", () => {
+    return request(app)
+      .patch("/tours/1")
+      .send({ tourName: "New Tour", tourCode: "onetwothree" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid Input");
+      })
+      .then(() => {
+        return request(app)
+          .get("/tours/1")
+          .expect(200)
+          .then(({ body }) => {
+            const tour = body[0];
+            expect(tour).toEqual(
+              expect.objectContaining({
+                tourId: 1,
+                authorId: 1,
+                tourCode: 123456,
+                tourName: "Tour of Durham",
+                tourDescription: "A tour of historic Durham",
+                tourImage:
+                  "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+                tourSites: [1, 2, 3, 4],
+              })
+            );
+          });
+      });
+  });
 });
 
 describe("Testing the site/:site_id endpoints", () => {
