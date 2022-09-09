@@ -8,9 +8,9 @@ const {
 const generateUniqueId = require("generate-unique-id");
 
 exports.getTours = async (req, res, next) => {
-  const { author_id, tour_code } = req.query;
-  const tours = await fetchTours(author_id, tour_code).catch((err) =>
-    next(err)
+  const { author_id, tour_code, sort_by, order } = req.query;
+  const tours = await fetchTours(author_id, tour_code, sort_by, order).catch(
+    (err) => next(err)
   );
   res.status(200).send(tours);
 };
@@ -28,7 +28,9 @@ exports.postTour = async (req, res, next) => {
     useLetters: false,
   });
   newTour.tourCode = Number(id);
-  const addedTour = await addTour(newTour).catch((err) => next(err));
+  const addedTour = await addTour(newTour).catch((err) => {
+    next(err);
+  });
   res.status(201).send(addedTour);
 };
 
