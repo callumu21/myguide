@@ -13,13 +13,13 @@ exports.getTours = async (req, res, next) => {
   res.status(200).send(tours);
 };
 
-exports.getTourById = async (req, res) => {
+exports.getTourById = async (req, res, next) => {
   const { tour_id } = req.params;
-  const tour = await fetchTourById(tour_id);
+  const tour = await fetchTourById(tour_id).catch((err) => next(err));
   res.status(200).send(tour);
 };
 
-exports.postTour = async (req, res) => {
+exports.postTour = async (req, res, next) => {
   const newTour = req.body;
   const id = generateUniqueId({
     length: 6,
@@ -30,16 +30,24 @@ exports.postTour = async (req, res) => {
   res.status(201).send(addedTour);
 };
 
-exports.updateTour = async (req, res) => {
+exports.updateTour = async (req, res, next) => {
   const { tour_id } = req.params;
-  const updates = req.body;
-  await changeTour(tour_id, updates);
-  const tour = await fetchTourById(tour_id);
-  res.status(200).send(tour);
+  try {
+    const updates = req.body;
+    await changeTour(tour_id, updates);
+    const tour = await fetchTourById(tour_id);
+    res.status(200).send(tour);
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.deleteTour = async (req, res) => {
+exports.deleteTour = async (req, res, next) => {
   const { tour_id } = req.params;
-  await removeTour(tour_id);
-  res.sendStatus(204);
+  try {
+    await removeTour(tour_id);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
 };

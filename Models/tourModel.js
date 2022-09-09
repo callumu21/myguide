@@ -17,6 +17,9 @@ exports.fetchTours = async (author_id) => {
 
 exports.fetchTourById = async (tour_id) => {
   return Tour.find({ tourId: tour_id }).then((tour) => {
+    if (!tour.length) {
+      return Promise.reject({ status: 404, msg: "Tour does not exist" });
+    }
     return tour;
   });
 };
@@ -51,5 +54,9 @@ exports.changeTour = async (tour_id, updates) => {
 };
 
 exports.removeTour = async (tour_id) => {
-  return Tour.deleteOne({ tourId: tour_id });
+  return Tour.deleteOne({ tourId: tour_id }).then((res) => {
+    if (res.deletedCount === 0) {
+      return Promise.reject({ status: 404, msg: "Tour does not exist" });
+    }
+  });
 };
