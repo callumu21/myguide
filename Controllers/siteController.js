@@ -7,36 +7,44 @@ const {
 } = require("../Models/siteModel");
 
 exports.getSites = async (req, res, next) => {
-  const { author_id, site_id, sort_by, order } = req.query;
-  const sites = await retrieveSites(author_id, site_id, sort_by, order).catch(
-    (err) => next(err)
-  );
-  res.status(200).send(sites);
+  try {
+    const { author_id, site_id, sort_by, order } = req.query;
+    const sites = await retrieveSites(author_id, site_id, sort_by, order);
+    res.status(200).send(sites);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.postSite = async (req, res, next) => {
-  const newSite = req.body;
-  const addedSite = await addAnotherSite(newSite).catch((err) => next(err));
-  res.status(201).send(addedSite);
+  try {
+    const newSite = req.body;
+    const addedSite = await addAnotherSite(newSite);
+    res.status(201).send(addedSite);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getSiteById = async (req, res, next) => {
-  const { site_id } = req.params;
-  const selectedSiteById = await fetchedSiteById(site_id).catch((err) =>
-    next(err)
-  );
-  res.status(200).send(selectedSiteById);
+  try {
+    const { site_id } = req.params;
+    const selectedSiteById = await fetchedSiteById(site_id);
+    res.status(200).send(selectedSiteById);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.patchSiteById = async (req, res, next) => {
   const { site_id } = req.params;
   try {
-  const updates = req.body;
-  await updateSiteById(site_id, updates)
-  const updatedSite = await fetchedSiteById(site_id)
-  res.status(200).send(updatedSite)
+    const updates = req.body;
+    await updateSiteById(site_id, updates);
+    const updatedSite = await fetchedSiteById(site_id);
+    res.status(200).send(updatedSite);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 

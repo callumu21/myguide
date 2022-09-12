@@ -2,7 +2,7 @@ const request = require("supertest");
 const jestsorted = require("jest-sorted");
 const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data");
-const app = require("../app.js");
+const app = require("../app");
 
 beforeEach(() => seed(testData));
 afterAll(() => seed(testData));
@@ -19,7 +19,7 @@ describe("Testing the sites endpoint", () => {
         sites.forEach((site) => {
           expect(site).toEqual(
             expect.objectContaining({
-              authorID: expect.any(Number),
+              authorId: expect.any(Number),
               siteName: expect.any(String),
               siteDescription: expect.any(String),
               siteImage: expect.any(String),
@@ -45,7 +45,7 @@ describe("Testing the sites endpoint", () => {
         sites.forEach((site) => {
           expect(site).toEqual(
             expect.objectContaining({
-              authorID: expect.any(Number),
+              authorId: expect.any(Number),
               siteName: expect.any(String),
               siteDescription: expect.any(String),
               siteImage: expect.any(String),
@@ -64,7 +64,7 @@ describe("Testing the sites endpoint", () => {
     return request(app)
       .post("/sites")
       .send({
-        authorID: 12,
+        authorId: 12,
         siteName: "String",
         siteDescription: "String",
         siteImage: "String",
@@ -80,7 +80,7 @@ describe("Testing the sites endpoint", () => {
         expect(sites).toBeInstanceOf(Object);
         expect(sites).toEqual(
           expect.objectContaining({
-            authorID: 12,
+            authorId: 12,
             siteName: "String",
             siteDescription: "String",
             siteImage: "String",
@@ -130,7 +130,7 @@ describe("Testing the sites endpoint", () => {
       });
   });
 
-  test("should return a status 400 when passed a site_ids query not matching an array", () => {
+  test("should return a status 400 when passed a site_id query not matching an array", () => {
     return request(app)
       .get("/sites?site_id=211")
       .expect(400)
@@ -143,7 +143,7 @@ describe("Testing the sites endpoint", () => {
     return request(app)
       .post("/sites")
       .send({
-        authorID: 12,
+        authorId: 12,
         siteName: "String",
         siteDescription: "String",
         siteImage: "String",
@@ -162,7 +162,7 @@ describe("Testing the sites endpoint", () => {
     return request(app)
       .post("/sites")
       .send({
-        authorID: 12,
+        authorId: 12,
         siteName: "String",
         siteDescription: "String",
         siteImage: "String",
@@ -174,7 +174,7 @@ describe("Testing the sites endpoint", () => {
       })
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe("Invalid Input");
+        expect(res.body.msg).toBe("Invalid Input!");
       });
   });
 });
@@ -498,7 +498,7 @@ describe("Testing the site/:site_id endpoints", () => {
       .then(({ body }) => {
         expect(body[0]).toEqual(
           expect.objectContaining({
-            authorID: 1,
+            authorId: 1,
             siteName: "Durham Cathedral",
             siteDescription: "This is Durham Cathedral",
             siteImage:
@@ -521,7 +521,7 @@ describe("Testing the site/:site_id endpoints", () => {
       .then(({ body }) => {
         expect(body[0]).toEqual(
           expect.objectContaining({
-            authorID: 1,
+            authorId: 1,
             siteName: "Manchester Cathedral",
             siteDescription: "This is Durham Cathedral",
             siteImage:
@@ -581,7 +581,7 @@ describe("Testing the site/:site_id endpoints", () => {
   test("should return a status 400 when passed a invalid body for a patch request", () => {
     return request(app)
       .patch("/sites/1")
-      .send({ authorID: "hellohello" })
+      .send({ authorId: "hellohello" })
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Invalid Input");
@@ -591,7 +591,7 @@ describe("Testing the site/:site_id endpoints", () => {
   test("should receive a status 400 when valid and invalid values are passed, leaving the site unchanged", () => {
     return request(app)
       .patch("/sites/1")
-      .send({ authorID: 1, latitude: "wassupeveryone" })
+      .send({ authorId: 1, latitude: "wassupeveryone" })
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid Input");
@@ -604,7 +604,7 @@ describe("Testing the site/:site_id endpoints", () => {
             const site = body[0];
             expect(site).toEqual(
               expect.objectContaining({
-                authorID: 1,
+                authorId: 1,
                 siteName: "Durham Cathedral",
                 siteDescription: "This is Durham Cathedral",
                 siteImage:
