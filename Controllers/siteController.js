@@ -7,9 +7,9 @@ const {
 } = require("../Models/siteModel");
 
 exports.getSites = async (req, res, next) => {
-  const { author_id, site_id } = req.query;
-  const sites = await retrieveSites(author_id, site_id).catch((err) =>
-    next(err)
+  const { author_id, site_id, sort_by, order } = req.query;
+  const sites = await retrieveSites(author_id, site_id, sort_by, order).catch(
+    (err) => next(err)
   );
   res.status(200).send(sites);
 };
