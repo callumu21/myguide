@@ -634,3 +634,59 @@ describe("Sorting and ordering queries for /tours", () => {
       });
   });
 });
+
+describe("Sorting and ordering queries for /sites", () => {
+  test("Sites are returned in descending order of updatedAt by default", () => {
+    return request(app)
+      .get("/sites")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("updatedAt", { descending: true });
+      });
+  });
+
+  test("Sites can be sorted by siteName", () => {
+    return request(app)
+      .get("/sites?sort_by=siteName")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("siteName", { descending: true });
+      });
+  });
+
+  test("Sites can be sorted in ascending order of updatedAt", () => {
+    return request(app)
+      .get("/sites?order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("updatedAt", { descending: false });
+      });
+  });
+
+  test("Sites can be sorted in reverse alphabetical order for siteName", () => {
+    return request(app)
+      .get("/sites?sort_by=siteName&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("siteName", { descending: false });
+      });
+  });
+
+  test("Returns a 400 status code and error message when sort_by query is invalid", () => {
+    return request(app)
+      .get("/sites?sort_by=age")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid sort by query");
+      });
+  });
+
+  test("Returns a 400 status code and error message when order query is invalid", () => {
+    return request(app)
+      .get("/sites?order=age")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid order query");
+      });
+  });
+});
