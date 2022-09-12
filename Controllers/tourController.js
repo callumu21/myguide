@@ -10,7 +10,9 @@ const generateUniqueId = require("generate-unique-id");
 exports.getTours = async (req, res, next) => {
   const { author_id, tour_code, sort_by, order } = req.query;
   const tours = await fetchTours(author_id, tour_code, sort_by, order).catch(
-    (err) => next(err)
+    (err) => {
+      next(err);
+    }
   );
   res.status(200).send(tours);
 };

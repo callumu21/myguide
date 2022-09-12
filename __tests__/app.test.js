@@ -694,7 +694,7 @@ describe("Sorting and ordering queries for /tours", () => {
       });
   });
 
-  test("Returns a 400 status code and error message when order query is invalid", () => {
+  test.only("Returns a 400 status code and error message when order query is invalid", () => {
     return request(app)
       .get("/tours?order=age")
       .expect(400)

@@ -10,7 +10,7 @@ const {
 toursRouter.route("/").get(getTours).post(postTour);
 
 toursRouter
-  .route("/tours/:tour_id")
+  .route("/:tour_id")
   .get(getTourById)
   .patch(updateTour)
   .delete(deleteTour);

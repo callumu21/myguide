@@ -13,8 +13,9 @@ exports.fetchTours = async (
 
   const validOrderQueries = ["desc", "asc"];
 
-  if (!validOrderQueries.includes(order))
+  if (!validOrderQueries.includes(order)) {
     return Promise.reject({ status: 400, msg: "Invalid order query" });
+  }
 
   return Tour.find({
     ...(author_id ? { authorId: author_id } : {}),

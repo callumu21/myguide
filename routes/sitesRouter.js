@@ -10,7 +10,7 @@ const {
 sitesRouter.route("/").get(getSites).post(postSite);
 
 sitesRouter
-  .route("/sites/:site_id")
+  .route("/:site_id")
   .get(getSiteById)
   .patch(patchSiteById)
   .delete(deleteSiteById);
