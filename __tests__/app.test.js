@@ -750,7 +750,7 @@ describe("Sorting and ordering queries for /sites", () => {
       });
   });
 
-  test("Returns a 400 status code and error message when order query is invalid", () => {
+  test("  Returns a 400 status code and error message when order query is invalid", () => {
     return request(app)
       .get("/sites?order=age")
       .expect(400)
