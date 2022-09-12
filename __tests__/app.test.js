@@ -2,7 +2,7 @@ const request = require("supertest");
 const jestsorted = require("jest-sorted");
 const seed = require("../db/seeds/seed.js");
 const testData = require("../db/data/test-data");
-const app = require("../app.js");
+const app = require("../app");
 
 beforeEach(() => seed(testData));
 afterAll(() => seed(testData));
