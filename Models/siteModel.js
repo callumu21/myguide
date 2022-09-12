@@ -85,6 +85,9 @@ exports.addAnotherSite = async (newSite) => {
 
 exports.fetchedSiteById = async (site_id) => {
   return Site.find({ siteId: site_id }).then((siteById) => {
+    if (!siteById.length) {
+      return Promise.reject({ status: 404, msg: "Site ID does not exist"})
+    }
     return siteById;
   });
 };
@@ -98,5 +101,9 @@ exports.updateSiteById = async (site_id, updates) => {
 };
 
 exports.removeSiteById = async (site_id) => {
-  return Site.deleteOne({ siteId: site_id });
+  return Site.deleteOne({ siteId: site_id }).then((res) => {
+    if (res.deletedCount === 0) {
+      return Promise.reject({ status: 404, msg: "Site ID does not exist" });
+    }
+  });
 };

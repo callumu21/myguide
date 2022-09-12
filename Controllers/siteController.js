@@ -7,8 +7,8 @@ const {
 } = require("../Models/siteModel");
 
 exports.getSites = async (req, res, next) => {
-  const { author_id, site_ids, sort_by, order } = req.query;
-  const sites = await retrieveSites(author_id, site_ids, sort_by, order).catch(
+  const { author_id, site_id, sort_by, order } = req.query;
+  const sites = await retrieveSites(author_id, site_id, sort_by, order).catch(
     (err) => next(err)
   );
   res.status(200).send(sites);
@@ -30,16 +30,23 @@ exports.getSiteById = async (req, res, next) => {
 
 exports.patchSiteById = async (req, res, next) => {
   const { site_id } = req.params;
+  try {
   const updates = req.body;
-
-  await updateSiteById(site_id, updates).catch((err) => next(err));
-  const updatedSite = await fetchedSiteById(site_id).catch((err) => next(err));
-  res.status(200).send(updatedSite);
+  await updateSiteById(site_id, updates)
+  const updatedSite = await fetchedSiteById(site_id)
+  res.status(200).send(updatedSite)
+  } catch (err) {
+    next(err)
+  }
 };
 
 exports.deleteSiteById = async (req, res, next) => {
   const { site_id } = req.params;
 
-  await removeSiteById(site_id);
-  res.sendStatus(204);
+  try {
+    await removeSiteById(site_id);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
 };

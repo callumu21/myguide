@@ -114,7 +114,7 @@ describe("Testing the sites endpoint", () => {
 
   test("should return a status 404 when passed an empty array as the sites_id query", () => {
     return request(app)
-      .get("/sites?site_ids=[]")
+      .get("/sites?site_id=[]")
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("No sites found");
@@ -123,7 +123,7 @@ describe("Testing the sites endpoint", () => {
 
   test("should return a status 404 when passed an array with site ids not matching any site", () => {
     return request(app)
-      .get("/sites?site_ids=[200, 201]")
+      .get("/sites?site_id=[200, 201]")
       .expect(404)
       .then((res) => {
         expect(res.body.msg).toBe("No sites found");
@@ -132,7 +132,7 @@ describe("Testing the sites endpoint", () => {
 
   test("should return a status 400 when passed a site_ids query not matching an array", () => {
     return request(app)
-      .get("/sites?site_ids=211")
+      .get("/sites?site_id=211")
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Site IDs should be an array");
@@ -547,6 +547,75 @@ describe("Testing the site/:site_id endpoints", () => {
           .then(({ body }) => {
             expect(body).toBeInstanceOf(Array);
             expect(body).toHaveLength(17);
+          });
+      });
+  });
+
+  test("should return a status 400 when passed an invalid input", () => {
+    return request(app)
+      .get("/sites/ewqrewr")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should return a status 404 when passed an Site ID that does not exist", () => {
+    return request(app)
+      .get("/sites/23")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Site ID does not exist");
+      });
+  });
+
+  test("when given a delete request it should return a status 404 when passed a non existent Site ID", () => {
+    return request(app)
+      .delete("/sites/2837")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Site ID does not exist");
+      });
+  });
+
+  test("should return a status 400 when passed a invalid body for a patch request", () => {
+    return request(app)
+      .patch("/sites/1")
+      .send({ authorID: "hellohello" })
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Input");
+      });
+  });
+
+  test("should receive a status 400 when valid and invalid values are passed, leaving the site unchanged", () => {
+    return request(app)
+      .patch("/sites/1")
+      .send({ authorID: 1, latitude: "wassupeveryone" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid Input");
+      })
+      .then(() => {
+        return request(app)
+          .get("/sites/1")
+          .expect(200)
+          .then(({ body }) => {
+            const site = body[0];
+            expect(site).toEqual(
+              expect.objectContaining({
+                authorID: 1,
+                siteName: "Durham Cathedral",
+                siteDescription: "This is Durham Cathedral",
+                siteImage:
+                  "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+                siteAddress: "Durham DH1 3EH",
+                latitude: 54.773678472624034,
+                longitude: -1.5762204386383316,
+                contactInfo: "0191 338 7178",
+                websiteLink: "https://www.durhamcathedral.co.uk/",
+              })
+            );
           });
       });
   });
