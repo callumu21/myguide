@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const apiRouter = require("./routes/apiRouter");
+const { handleError } = require("./error");
 
 const app = express();
 const ENV = process.env.NODE_ENV || "development";
@@ -24,9 +25,6 @@ app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Endpoint does not exist" });
 });
 
-app.use((err, req, res, next) => {
-  if (err.msg) res.status(err.status).send({ msg: err.msg });
-  res.status(400).send({ msg: "Invalid Input" });
-});
+app.use(handleError);
 
 module.exports = app;

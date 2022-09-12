@@ -78,19 +78,29 @@ exports.addTour = async (newTour) => {
     });
   }
 
-  return Tour.create(newTour).then((createdTour) => {
-    return createdTour;
-  });
+  const createdTour = await Tour.create(newTour);
+  return createdTour;
 };
 
 exports.changeTour = async (tour_id, updates) => {
-  return Tour.updateOne({ tourId: tour_id }, { $set: updates });
+  try {
+    const updatedTour = await Tour.updateOne(
+      { tourId: tour_id },
+      { $set: updates }
+    );
+    return updatedTour;
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.removeTour = async (tour_id) => {
-  return Tour.deleteOne({ tourId: tour_id }).then((res) => {
-    if (res.deletedCount === 0) {
-      return Promise.reject({ status: 404, msg: "Tour does not exist" });
-    }
-  });
+  try {
+    const res = await Tour.deleteOne({ tourId: tour_id });
+    return res.deletedCount === 0
+      ? Promise.reject({ status: 404, msg: "Tour does not exist" })
+      : null;
+  } catch (err) {
+    next(err);
+  }
 };

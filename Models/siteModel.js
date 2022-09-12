@@ -2,7 +2,7 @@ const Site = require("../siteQuery");
 
 exports.retrieveSites = async (
   author_id,
-  site_ids,
+  site_id,
   sort_by = "updatedAt",
   order = "desc"
 ) => {
@@ -16,94 +16,101 @@ exports.retrieveSites = async (
   if (!validOrderQueries.includes(order))
     return Promise.reject({ status: 400, msg: "Invalid order query" });
 
-  if (author_id) {
-    return Site.find({ authorID: author_id })
-      .sort({ [sort_by]: order === "desc" ? -1 : 1 })
-      .then((sites) => {
-        if (!sites.length) {
-          return Promise.reject({
-            status: 404,
-            msg: "Author ID does not exist",
-          });
-        }
-        return sites;
-      });
-  } else if (site_ids) {
-    const ids = JSON.parse(site_ids);
-    if (!Array.isArray(ids))
-      return Promise.reject({
-        status: 400,
-        msg: "Site IDs should be an array",
-      });
-    return Site.find({ siteId: { $in: ids } })
-      .sort({ [sort_by]: order === "desc" ? -1 : 1 })
-      .then((sites) => {
-        if (!sites.length) {
-          return Promise.reject({ status: 404, msg: "No sites found" });
-        }
-        return sites;
-      });
-  } else {
-    return Site.find()
-      .sort({ [sort_by]: order === "desc" ? -1 : 1 })
-      .then((sites) => {
-        return sites;
-      });
+  const ids = site_id ? JSON.parse(site_id) : site_id;
+
+  if (site_id && !Array.isArray(ids)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Site IDs should be an array",
+    });
   }
+
+  return Site.find({
+    ...(author_id ? { authorId: author_id } : {}),
+    ...(site_id ? { siteId: { $in: ids } } : {}),
+  })
+    .sort({ [sort_by]: order === "desc" ? -1 : 1 })
+    .then((sites) => {
+      const msg = author_id ? "Author ID does not exist" : "No sites found";
+
+      if (!sites.length) {
+        return Promise.reject({
+          status: 404,
+          msg: msg,
+        });
+      }
+      return sites;
+    });
 };
 
 exports.addAnotherSite = async (newSite) => {
-  if (
-    newSite.authorID === undefined ||
-    newSite.siteName === undefined ||
-    newSite.siteDescription === undefined ||
-    newSite.siteImage === undefined ||
-    newSite.siteAddress === undefined ||
-    newSite.latitude === undefined ||
-    newSite.longitude === undefined ||
-    newSite.contactInfo === undefined ||
-    newSite.websiteLink === undefined
-  ) {
-    return Promise.reject({ status: 400, msg: "Missing Input Information!" });
+  const correctForm = {
+    authorId: "number",
+    siteName: "string",
+    siteDescription: "string",
+    siteImage: "string",
+    siteAddress: "string",
+    latitude: "number",
+    longitude: "number",
+    contactInfo: "string",
+    websiteLink: "string",
+  };
+
+  const equals = (array1, array2) =>
+    array1.length === array2.length &&
+    array1.every((value, index) => value === array2[index]);
+
+  if (!equals(Object.keys(newSite), Object.keys(correctForm))) {
+    return Promise.reject({
+      status: 400,
+      msg: "Missing Input Information!",
+    });
   } else if (
-    typeof newSite.authorID !== "number" ||
-    typeof newSite.siteName !== "string" ||
-    typeof newSite.siteDescription !== "string" ||
-    typeof newSite.siteImage !== "string" ||
-    typeof newSite.siteAddress !== "string" ||
-    typeof newSite.latitude !== "number" ||
-    typeof newSite.longitude !== "number" ||
-    typeof newSite.contactInfo !== "string" ||
-    typeof newSite.websiteLink !== "string"
+    !Object.keys(newSite).every(
+      (key) => typeof newSite[key] === correctForm[key]
+    )
   ) {
-    return Promise.reject({ status: 400, msg: "Invalid Input" });
+    return Promise.reject({
+      status: 400,
+      msg: "Invalid Input!",
+    });
   }
+
   return Site.create(newSite).then((createdSite) => {
     return createdSite;
   });
 };
 
 exports.fetchedSiteById = async (site_id) => {
-  return Site.find({ siteId: site_id }).then((siteById) => {
-    if (!siteById.length) {
-      return Promise.reject({ status: 404, msg: "Site ID does not exist"})
-    }
-    return siteById;
-  });
+  try {
+    const site = await Site.find({ siteId: site_id });
+    return site.length
+      ? site
+      : Promise.reject({ status: 404, msg: "Site ID does not exist" });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.updateSiteById = async (site_id, updates) => {
-  return Site.updateOne({ siteId: site_id }, { $set: updates }).then(
-    (updatedSite) => {
-      return updatedSite;
-    }
-  );
+  try {
+    const updatedSite = await Site.updateOne(
+      { siteId: site_id },
+      { $set: updates }
+    );
+    return updatedSite;
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.removeSiteById = async (site_id) => {
-  return Site.deleteOne({ siteId: site_id }).then((res) => {
-    if (res.deletedCount === 0) {
-      return Promise.reject({ status: 404, msg: "Site ID does not exist" });
-    }
-  });
+  try {
+    const res = await Site.deleteOne({ siteId: site_id });
+    return res.deletedCount === 0
+      ? Promise.reject({ status: 404, msg: "Site ID does not exist" })
+      : null;
+  } catch (err) {
+    next(err);
+  }
 };

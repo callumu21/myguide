@@ -1,7 +1,7 @@
 module.exports = seedSites = [
   {
     siteId: 1,
-    authorID: 1,
+    authorId: 1,
     siteName: "Durham Cathedral",
     siteDescription: "This is Durham Cathedral",
     siteImage:
@@ -14,7 +14,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 2,
-    authorID: 1,
+    authorId: 1,
     siteName: "Durham Castle",
     siteDescription: "This is Durham Castle",
     siteImage:
@@ -28,7 +28,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 3,
-    authorID: 1,
+    authorId: 1,
     siteName: "Botanic Garden",
     siteDescription: "This is Durham Botanic Garden",
     siteImage:
@@ -41,7 +41,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 4,
-    authorID: 1,
+    authorId: 1,
     siteName: "Durham University",
     siteDescription: "This is Durham University",
     siteImage:
@@ -54,7 +54,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 5,
-    authorID: 1,
+    authorId: 1,
     siteName: "Wollaton Hall",
     siteDescription: "This is Wollaton Hall",
     siteImage:
@@ -67,7 +67,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 6,
-    authorID: 1,
+    authorId: 1,
     siteName: "City of Caves",
     siteDescription: "This is the City of Caves",
     siteImage:
@@ -80,7 +80,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 7,
-    authorID: 1,
+    authorId: 1,
     siteName: "The Arboretum",
     siteDescription: "This is The Arboretum",
     siteImage: "https://myguideimages.s3.eu-west-2.amazonaws.com/arboretum.jpg",
@@ -93,7 +93,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 8,
-    authorID: 1,
+    authorId: 1,
     siteName: "Nottingham Industrial Museum",
     siteDescription: "This is Nottingham Industrial Museum",
     siteImage:
@@ -107,7 +107,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 9,
-    authorID: 2,
+    authorId: 2,
     siteName: "Yorkshire Wildlife Park",
     siteDescription: "This is Yorkshire Wildlife Park",
     siteImage:
@@ -120,7 +120,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 10,
-    authorID: 2,
+    authorId: 2,
     siteName: "The Vulcan Experience",
     siteDescription:
       "If you miss seeing XH558 at the air shows this is your chance to get up close with this gorgeous iconic aircraft again. Book today, you won’t be disappointed.",
@@ -134,7 +134,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 11,
-    authorID: 2,
+    authorId: 2,
     siteName: "Brodsworth Hall and Gardens",
     siteDescription: "This is Brodsworth Hall and Gardens",
     siteImage:
@@ -148,7 +148,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 12,
-    authorID: 2,
+    authorId: 2,
     siteName: "Doncaster Racecourse",
     siteDescription: "This is Doncaster Racecourse",
     siteImage:
@@ -161,7 +161,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 13,
-    authorID: 3,
+    authorId: 3,
     siteName: "Manchester Art Gallery",
     siteDescription: "This is Manchester Art Gallery",
     siteImage:
@@ -174,7 +174,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 14,
-    authorID: 3,
+    authorId: 3,
     siteName: "Science and Industry Museum",
     siteDescription: "This is the Science and Industry Museum",
     siteImage:
@@ -187,7 +187,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 15,
-    authorID: 3,
+    authorId: 3,
     siteName: "People's History Museum",
     siteDescription: "This is the People's History Museum",
     siteImage:
@@ -200,7 +200,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 16,
-    authorID: 3,
+    authorId: 3,
     siteName: "National Football Museum",
     siteDescription: "This is the National Football Museum",
     siteImage:
@@ -213,7 +213,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 17,
-    authorID: 3,
+    authorId: 3,
     siteName: "Manchester Museum",
     siteDescription: "This is Manchester Museum",
     siteImage:
@@ -226,7 +226,7 @@ module.exports = seedSites = [
   },
   {
     siteId: 18,
-    authorID: 3,
+    authorId: 3,
     siteName: "Manchester Jewish Museum",
     siteDescription: "This is Manchester Jewish Museum",
     siteImage:

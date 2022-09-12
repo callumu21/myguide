@@ -8,32 +8,38 @@ const {
 const generateUniqueId = require("generate-unique-id");
 
 exports.getTours = async (req, res, next) => {
-  const { author_id, tour_code, sort_by, order } = req.query;
-  const tours = await fetchTours(author_id, tour_code, sort_by, order).catch(
-    (err) => {
-      next(err);
-    }
-  );
-  res.status(200).send(tours);
+  try {
+    const { author_id, tour_code, sort_by, order } = req.query;
+    const tours = await fetchTours(author_id, tour_code, sort_by, order);
+    res.status(200).send(tours);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getTourById = async (req, res, next) => {
-  const { tour_id } = req.params;
-  const tour = await fetchTourById(tour_id).catch((err) => next(err));
-  res.status(200).send(tour);
+  try {
+    const { tour_id } = req.params;
+    const tour = await fetchTourById(tour_id);
+    res.status(200).send(tour);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.postTour = async (req, res, next) => {
-  const newTour = req.body;
-  const id = generateUniqueId({
-    length: 6,
-    useLetters: false,
-  });
-  newTour.tourCode = Number(id);
-  const addedTour = await addTour(newTour).catch((err) => {
+  try {
+    const newTour = req.body;
+    const id = generateUniqueId({
+      length: 6,
+      useLetters: false,
+    });
+    newTour.tourCode = Number(id);
+    const addedTour = await addTour(newTour);
+    res.status(201).send(addedTour);
+  } catch (err) {
     next(err);
-  });
-  res.status(201).send(addedTour);
+  }
 };
 
 exports.updateTour = async (req, res, next) => {

@@ -3,7 +3,7 @@ const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const SiteSchema = mongoose.Schema(
   {
-    authorID: Number,
+    authorId: Number,
     siteName: String,
     siteDescription: String,
     siteImage: String,
