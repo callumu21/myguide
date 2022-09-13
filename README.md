@@ -4,6 +4,12 @@ This project serves as a backend for the myGuide app. The server allows for Crea
 
 The server is implemented in Node.js, using express as the framework. The database used is mongoDB using Mongoose to connect between the database and Node.js
 
+A hosted version of this server can be seen here:
+
+```
+https://myguidebackend.onrender.com/
+```
+
 ## Prerequisites
 
 Ensure you have node.js installed.
