@@ -26,7 +26,6 @@
     "description": "Adds a new site into the sites database",
     "queries": [],
     "exampleRequest": {
-      "siteId": 27,
       "authorId": 4,
       "siteName": "Manchester Cathedral",
       "siteDescription": "This is Manchester Cathedral",
@@ -113,7 +112,6 @@
     "description": "Adds a new tour into the tours database",
     "queries": [],
     "exampleRequest": {
-      "tourId": 13,
       "authorId": 2,
       "tourCode": 234321,
       "tourName": "Tour of Manchester",
