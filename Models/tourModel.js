@@ -62,7 +62,10 @@ exports.addTour = async (newTour) => {
     array1.length === array2.length &&
     array1.every((value, index) => value === array2[index]);
 
-  if (!equals(Object.keys(newTour), Object.keys(correctForm))) {
+  const newTourKeys = Object.keys(newTour).sort();
+  const correctFormKeys = Object.keys(correctForm).sort();
+
+  if (!equals(newTourKeys, correctFormKeys)) {
     return Promise.reject({
       status: 400,
       msg: "Missing Input Information!",
