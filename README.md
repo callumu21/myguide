@@ -68,6 +68,12 @@ node app.js
 To view all available endpoints visit
 
 ```
+localhost:port_number/
+```
+
+By default this is
+
+```
 localhost:9090/
 ```
 
