@@ -60,7 +60,10 @@ exports.addAnotherSite = async (newSite) => {
     array1.length === array2.length &&
     array1.every((value, index) => value === array2[index]);
 
-  if (!equals(Object.keys(newSite), Object.keys(correctForm))) {
+  const newSiteKeys = Object.keys(newSite).sort();
+  const correctSiteKeys = Object.keys(correctForm).sort();
+
+  if (!equals(newSiteKeys, correctSiteKeys)) {
     return Promise.reject({
       status: 400,
       msg: "Missing Input Information!",
