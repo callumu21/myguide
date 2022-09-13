@@ -68,7 +68,7 @@
     }
   },
   "PATCH /sites:site_id": {
-    "description": "Changes the authorId property of a specified site by a number which is passed in through the request",
+    "description": "Changes the specified property/properties of a specified site by a number/string which is passed in through the request",
     "queries": [],
     "exampleRequest": { "authorId": 6 },
     "exampleResponse": {
@@ -147,7 +147,7 @@
   },
 
   "PATCH /tours:tour_id": {
-    "description": "Changes the tourCode property of a specified tour by a number which is passed in through the request",
+    "description": "Changes the specified property/properties of a specified tour by a number/string which is passed in through the request",
     "queries": [],
     "exampleRequest": { "tourCode": 101010 },
     "exampleResponse": {
