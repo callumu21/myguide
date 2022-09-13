@@ -19,7 +19,7 @@ mongoose.connect(uri, () => {
 const client = new MongoClient(uri);
 
 const seed = async ({ siteData, tourData }) => {
-  const collection = client.db("test").collection("counters");
+  const collection = client.db(ENV).collection("counters");
   await collection.updateOne(
     { id: "siteId" },
     { $set: { seq: siteData.length } }
