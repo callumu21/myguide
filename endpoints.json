@@ -1,0 +1,169 @@
+{
+  "GET /": {
+    "description": "serves up a json representation of all the available endpoints of the api"
+  },
+  "GET /sites": {
+    "description": "serves an array of all sites",
+    "queries": ["author_id", "site_id", "sort_by", "order"],
+    "exampleResponse": {
+      "sites": [
+        {
+          "siteId": 1,
+          "authorId": 1,
+          "siteName": "Durham Cathedral",
+          "siteDescription": "This is Durham Cathedral",
+          "siteImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+          "siteAddress": "Durham DH1 3EH",
+          "latitude": 54.773678472624034,
+          "longitude": -1.5762204386383316,
+          "contactInfo": "0191 338 7178",
+          "websiteLink": "https://www.durhamcathedral.co.uk/"
+        }
+      ]
+    }
+  },
+  "POST /sites": {
+    "description": "Adds a new site into the sites database",
+    "queries": [],
+    "exampleRequest": {
+      "siteId": 27,
+      "authorId": 4,
+      "siteName": "Manchester Cathedral",
+      "siteDescription": "This is Manchester Cathedral",
+      "siteImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+      "siteAddress": "Durham DH1 3EH",
+      "latitude": 67.773678472624034,
+      "longitude": -4.5762204386383316,
+      "contactInfo": "0161 338 7178",
+      "websiteLink": "https://www.manchestercathedral.co.uk/"
+    },
+    "exampleResponse": {
+      "siteId": 27,
+      "authorId": 4,
+      "siteName": "Manchester Cathedral",
+      "siteDescription": "This is Manchester Cathedral",
+      "siteImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+      "siteAddress": "Manchester DH1 3EH",
+      "latitude": 67.773678472624034,
+      "longitude": -4.5762204386383316,
+      "contactInfo": "0161 338 7178",
+      "websiteLink": "https://www.manchestercathedral.co.uk/"
+    }
+  },
+
+  "GET /sites:site_id": {
+    "description": "provides an object of a single site with specified site id",
+    "queries": [],
+    "exampleResponse": {
+      "siteId": 1,
+      "authorId": 1,
+      "siteName": "Durham Cathedral",
+      "siteDescription": "This is Durham Cathedral",
+      "siteImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+      "siteAddress": "Durham DH1 3EH",
+      "latitude": 54.773678472624034,
+      "longitude": -1.5762204386383316,
+      "contactInfo": "0191 338 7178",
+      "websiteLink": "https://www.durhamcathedral.co.uk/"
+    }
+  },
+  "PATCH /sites:site_id": {
+    "description": "Changes the authorId property of a specified site by a number which is passed in through the request",
+    "queries": [],
+    "exampleRequest": { "authorId": 6 },
+    "exampleResponse": {
+      "siteId": 1,
+      "authorId": 6,
+      "siteName": "Durham Cathedral",
+      "siteDescription": "This is Durham Cathedral",
+      "siteImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+      "siteAddress": "Durham DH1 3EH",
+      "latitude": 54.773678472624034,
+      "longitude": -1.5762204386383316,
+      "contactInfo": "0191 338 7178",
+      "websiteLink": "https://www.durhamcathedral.co.uk/"
+    }
+  },
+
+  "DELETE /sites/:site_id": {
+    "description": "Deletes the specified site and responds with a status 204",
+    "queries": []
+  },
+  "exampleResponse": { "status": 204 },
+
+  "GET /tours": {
+    "description": "serves an array of all tours",
+    "queries": ["author_id", "tour_code", "sort_by", "order"],
+    "exampleResponse": {
+      "sites": [
+        {
+          "tourId": 1,
+          "authorId": 1,
+          "tourCode": 123456,
+          "tourName": "Tour of Durham",
+          "tourDescription": "A tour of historic Durham",
+          "tourImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+          "tourSites": [1, 2, 3, 4]
+        }
+      ]
+    }
+  },
+
+  "POST /tours": {
+    "description": "Adds a new tour into the tours database",
+    "queries": [],
+    "exampleRequest": {
+      "tourId": 13,
+      "authorId": 2,
+      "tourCode": 234321,
+      "tourName": "Tour of Manchester",
+      "tourDescription": "A tour of historic Manchester",
+      "tourImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/manchester_cathedral.jpg",
+      "tourSites": [1, 2, 3, 4]
+    },
+    "exampleResponse": {
+      "tourId": 13,
+      "authorId": 2,
+      "tourCode": 234321,
+      "tourName": "Tour of Manchester",
+      "tourDescription": "A tour of historic Manchester",
+      "tourImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/manchester_cathedral.jpg",
+      "tourSites": [1, 2, 3, 4]
+    }
+  },
+
+  "GET /tours:tour_id": {
+    "description": "provides an object of a single tour with specified tour id",
+    "queries": [],
+    "exampleResponse": {
+      "tourId": 1,
+      "authorId": 1,
+      "tourCode": 123456,
+      "tourName": "Tour of Durham",
+      "tourDescription": "A tour of historic Durham",
+      "tourImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+      "tourSites": [1, 2, 3, 4]
+    }
+  },
+
+  "PATCH /tours:tour_id": {
+    "description": "Changes the tourCode property of a specified tour by a number which is passed in through the request",
+    "queries": [],
+    "exampleRequest": { "tourCode": 101010 },
+    "exampleResponse": {
+      "tourId": 1,
+      "authorId": 1,
+      "tourCode": 101010,
+      "tourName": "Tour of Durham",
+      "tourDescription": "A tour of historic Durham",
+      "tourImage": "https://myguideimages.s3.eu-west-2.amazonaws.com/durham_cathedral.jpg",
+      "tourSites": [1, 2, 3, 4]
+    }
+  },
+
+  "DELETE /tours/:tour_id": {
+    "description": "Deletes the specified tour and responds with a status 204",
+    "queries": [],
+    "exampleResponse": { "status": 204 }
+  }
+}
